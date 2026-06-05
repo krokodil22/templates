@@ -23,6 +23,39 @@ import {
 import log from './log';
 import storage from './storage';
 
+const localProjects = {
+    interview: {
+        pathSegment: 'interview',
+        fileName: 'task.sb3'
+    },
+    VU: {
+        pathSegment: 'VU',
+        fileName: 'VU.sb3'
+    }
+};
+
+const getLocalProjectUrl = projectId => {
+    const localProject = localProjects[projectId];
+
+    if (!localProject) return null;
+
+    const pathSegments = window.location.pathname
+        .split('/')
+        .map(segment => decodeURIComponent(segment))
+        .filter(Boolean);
+
+    const lastPathSegment = pathSegments[pathSegments.length - 1];
+    const templatePathSegment = lastPathSegment === 'index.html' ?
+        pathSegments[pathSegments.length - 2] :
+        lastPathSegment;
+
+    if (templatePathSegment === localProject.pathSegment) {
+        return localProject.fileName;
+    }
+
+    return `${localProject.pathSegment}/${localProject.fileName}`;
+};
+
 /* Higher Order Component to provide behavior for loading projects by id. If
  * there's no id, the default project is loaded.
  * @param {React.Component} WrappedComponent component to receive projectData prop
@@ -72,6 +105,25 @@ const ProjectFetcherHOC = function (WrappedComponent) {
             }
         }
         fetchProject (projectId, loadingState) {
+            const localProjectUrl = getLocalProjectUrl(projectId);
+
+            if (localProjectUrl) {
+                return fetch(localProjectUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Could not load local project: ${localProjectUrl}`);
+                        }
+                        return response.arrayBuffer();
+                    })
+                    .then(projectData => {
+                        this.props.onFetchedProjectData(projectData, loadingState);
+                    })
+                    .catch(err => {
+                        this.props.onError(err);
+                        log.error(err);
+                    });
+            }
+
             return storage
                 .load(storage.AssetType.Project, projectId, storage.DataFormat.JSON)
                 .then(projectAsset => {

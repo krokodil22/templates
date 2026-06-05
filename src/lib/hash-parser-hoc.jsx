@@ -9,6 +9,25 @@ import {
     setProjectId
 } from '../reducers/project-state';
 
+const localProjectIdsByPathSegment = {
+    interview: 'interview',
+    VU: 'VU'
+};
+
+const getLocalProjectIdFromPath = () => {
+    const pathSegments = window.location.pathname
+        .split('/')
+        .map(segment => decodeURIComponent(segment))
+        .filter(Boolean);
+
+    const lastPathSegment = pathSegments[pathSegments.length - 1];
+    const templatePathSegment = lastPathSegment === 'index.html' ?
+        pathSegments[pathSegments.length - 2] :
+        lastPathSegment;
+
+    return localProjectIdsByPathSegment[templatePathSegment] || null;
+};
+
 /* Higher Order Component to get the project id from location.hash
  * @param {React.Component} WrappedComponent: component to render
  * @returns {React.Component} component with hash parsing behavior
@@ -38,7 +57,9 @@ const HashParserHOC = function (WrappedComponent) {
         }
         handleHashChange () {
             const hashMatch = window.location.hash.match(/#(\d+)/);
-            const hashProjectId = hashMatch === null ? defaultProjectId : hashMatch[1];
+            const hashProjectId = hashMatch === null ?
+                getLocalProjectIdFromPath() || defaultProjectId :
+                hashMatch[1];
             this.props.setProjectId(hashProjectId.toString());
         }
         render () {
