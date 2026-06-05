@@ -44,7 +44,12 @@ const getLocalProjectUrl = projectId => {
         .map(segment => decodeURIComponent(segment))
         .filter(Boolean);
 
-    if (pathSegments.includes(localProject.pathSegment)) {
+    const lastPathSegment = pathSegments[pathSegments.length - 1];
+    const templatePathSegment = lastPathSegment === 'index.html' ?
+        pathSegments[pathSegments.length - 2] :
+        lastPathSegment;
+
+    if (templatePathSegment === localProject.pathSegment) {
         return localProject.fileName;
     }
 

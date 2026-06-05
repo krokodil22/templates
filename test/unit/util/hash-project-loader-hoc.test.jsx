@@ -101,6 +101,24 @@ describe('HashParserHOC', () => {
         expect(mockSetProjectIdFunc.mock.calls[0][0]).toBe('VU');
     });
 
+    test('when the file path contains a template folder name outside the page route, it passes 0 as projectId', () => {
+        const Component = ({projectId}) => <div>{projectId}</div>;
+        const WrappedComponent = HashParserHOC(Component);
+        Object.defineProperty(window.location, 'pathname', {
+            value: '/home/runner/work/VU/project/build/index.html',
+            configurable: true
+        });
+        window.location.hash = '';
+        const mockSetProjectIdFunc = jest.fn();
+        mount(
+            <WrappedComponent
+                setProjectId={mockSetProjectIdFunc}
+                store={store}
+            />
+        );
+        expect(mockSetProjectIdFunc.mock.calls[0][0]).toBe('0');
+    });
+
     test('when hash change happens, the projectId state is changed', () => {
         const Component = ({projectId}) => <div>{projectId}</div>;
         const WrappedComponent = HashParserHOC(Component);

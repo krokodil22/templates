@@ -20,13 +20,12 @@ const getLocalProjectIdFromPath = () => {
         .map(segment => decodeURIComponent(segment))
         .filter(Boolean);
 
-    for (const segment of pathSegments) {
-        if (localProjectIdsByPathSegment[segment]) {
-            return localProjectIdsByPathSegment[segment];
-        }
-    }
+    const lastPathSegment = pathSegments[pathSegments.length - 1];
+    const templatePathSegment = lastPathSegment === 'index.html' ?
+        pathSegments[pathSegments.length - 2] :
+        lastPathSegment;
 
-    return null;
+    return localProjectIdsByPathSegment[templatePathSegment] || null;
 };
 
 /* Higher Order Component to get the project id from location.hash
