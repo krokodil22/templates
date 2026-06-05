@@ -136,6 +136,20 @@ const buildConfig = baseConfig.clone()
     }))
     .addPlugin(new HtmlWebpackPlugin({
         ...commonHtmlWebpackPluginOptions,
+        chunks: ['gui'],
+        filename: 'interview/index.html',
+        template: 'src/playground/index.ejs',
+        title: 'Редактор'
+    }))
+    .addPlugin(new HtmlWebpackPlugin({
+        ...commonHtmlWebpackPluginOptions,
+        chunks: ['gui'],
+        filename: 'VU/index.html',
+        template: 'src/playground/index.ejs',
+        title: 'Редактор'
+    }))
+    .addPlugin(new HtmlWebpackPlugin({
+        ...commonHtmlWebpackPluginOptions,
         chunks: ['blocksonly'],
         filename: 'blocks-only.html',
         template: 'src/playground/index.ejs',
@@ -160,6 +174,14 @@ const buildConfig = baseConfig.clone()
             {
                 from: 'static',
                 to: 'static'
+            },
+            {
+                from: 'interview',
+                to: 'interview'
+            },
+            {
+                from: 'VU',
+                to: 'VU'
             },
             {
                 from: 'extensions/**',

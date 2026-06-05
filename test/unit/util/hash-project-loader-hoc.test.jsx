@@ -11,6 +11,11 @@ describe('HashParserHOC', () => {
     let store;
 
     beforeEach(() => {
+        Object.defineProperty(window.location, 'pathname', {
+            value: '/',
+            configurable: true
+        });
+        window.location.hash = '';
         store = mockStore({
             scratchGui: {
                 projectState: {}
@@ -58,6 +63,42 @@ describe('HashParserHOC', () => {
             />
         );
         expect(mockSetProjectIdFunc.mock.calls[0][0]).toBe('0');
+    });
+
+    test('when the path is a local interview template, it passes interview as projectId', () => {
+        const Component = ({projectId}) => <div>{projectId}</div>;
+        const WrappedComponent = HashParserHOC(Component);
+        Object.defineProperty(window.location, 'pathname', {
+            value: '/interview/',
+            configurable: true
+        });
+        window.location.hash = '';
+        const mockSetProjectIdFunc = jest.fn();
+        mount(
+            <WrappedComponent
+                setProjectId={mockSetProjectIdFunc}
+                store={store}
+            />
+        );
+        expect(mockSetProjectIdFunc.mock.calls[0][0]).toBe('interview');
+    });
+
+    test('when the path is a local VU template, it passes VU as projectId', () => {
+        const Component = ({projectId}) => <div>{projectId}</div>;
+        const WrappedComponent = HashParserHOC(Component);
+        Object.defineProperty(window.location, 'pathname', {
+            value: '/VU/',
+            configurable: true
+        });
+        window.location.hash = '';
+        const mockSetProjectIdFunc = jest.fn();
+        mount(
+            <WrappedComponent
+                setProjectId={mockSetProjectIdFunc}
+                store={store}
+            />
+        );
+        expect(mockSetProjectIdFunc.mock.calls[0][0]).toBe('VU');
     });
 
     test('when hash change happens, the projectId state is changed', () => {
