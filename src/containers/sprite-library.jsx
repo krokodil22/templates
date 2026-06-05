@@ -1,0 +1,52 @@
+import bindAll from 'lodash.bindall';
+import PropTypes from 'prop-types';
+import React from 'react';
+import {injectIntl, intlShape, defineMessages} from 'react-intl';
+import VM from 'scratch-vm';
+
+import {spriteLibraryContent} from '../lib/libraries/local-assets';
+import {addLocalSprite} from '../lib/local-asset-loader';
+
+import LibraryComponent from '../components/library/library.jsx';
+
+const messages = defineMessages({
+    libraryTitle: {
+        defaultMessage: 'Choose a Sprite',
+        description: 'Heading for the sprite library',
+        id: 'gui.spriteLibrary.chooseASprite'
+    }
+});
+
+class SpriteLibrary extends React.PureComponent {
+    constructor (props) {
+        super(props);
+        bindAll(this, [
+            'handleItemSelect'
+        ]);
+    }
+    handleItemSelect (item) {
+        addLocalSprite(this.props.vm, item).then(() => {
+            this.props.onActivateBlocksTab();
+        });
+    }
+    render () {
+        return (
+            <LibraryComponent
+                data={spriteLibraryContent}
+                id="spriteLibrary"
+                title={this.props.intl.formatMessage(messages.libraryTitle)}
+                onItemSelected={this.handleItemSelect}
+                onRequestClose={this.props.onRequestClose}
+            />
+        );
+    }
+}
+
+SpriteLibrary.propTypes = {
+    intl: intlShape.isRequired,
+    onActivateBlocksTab: PropTypes.func.isRequired,
+    onRequestClose: PropTypes.func,
+    vm: PropTypes.instanceOf(VM).isRequired
+};
+
+export default injectIntl(SpriteLibrary);
