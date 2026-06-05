@@ -132,6 +132,7 @@ const buildConfig = baseConfig.clone()
         ...commonHtmlWebpackPluginOptions,
         chunks: ['gui'],
         template: 'src/playground/index.ejs',
+        staticPath: 'static',
         title: 'Редактор'
     }))
     .addPlugin(new HtmlWebpackPlugin({
@@ -139,6 +140,7 @@ const buildConfig = baseConfig.clone()
         chunks: ['gui'],
         filename: 'interview/index.html',
         template: 'src/playground/index.ejs',
+        staticPath: '../static',
         title: 'Редактор'
     }))
     .addPlugin(new HtmlWebpackPlugin({
@@ -146,6 +148,7 @@ const buildConfig = baseConfig.clone()
         chunks: ['gui'],
         filename: 'VU/index.html',
         template: 'src/playground/index.ejs',
+        staticPath: '../static',
         title: 'Редактор'
     }))
     .addPlugin(new HtmlWebpackPlugin({

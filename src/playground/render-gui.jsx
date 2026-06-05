@@ -6,6 +6,7 @@ import AppStateHOC from '../lib/app-state-hoc.jsx';
 import GUI from '../containers/gui.jsx';
 import HashParserHOC from '../lib/hash-parser-hoc.jsx';
 import log from '../lib/log.js';
+import {getEditorBasePath} from '../lib/static-path';
 
 const onClickLogo = () => {
     window.location = 'https://scratch.mit.edu';
@@ -43,6 +44,8 @@ export default appTarget => {
     const backpackHostMatches = window.location.href.match(/[?&]backpack_host=([^&]*)&?/);
     const backpackHost = backpackHostMatches ? backpackHostMatches[1] : null;
 
+    const basePath = getEditorBasePath();
+
     const scratchDesktopMatches = window.location.href.match(/[?&]isScratchDesktop=([^&]+)/);
     let simulateScratchDesktop;
     if (scratchDesktopMatches) {
@@ -67,6 +70,7 @@ export default appTarget => {
             <WrappedGui
                 canEditTitle
                 isScratchDesktop
+                basePath={basePath}
                 showTelemetryModal
                 canSave={false}
                 onTelemetryModalCancel={handleTelemetryModalCancel}
@@ -76,6 +80,7 @@ export default appTarget => {
             <WrappedGui
                 canEditTitle
                 backpackVisible
+                basePath={basePath}
                 showComingSoon
                 backpackHost={backpackHost}
                 canSave={false}
