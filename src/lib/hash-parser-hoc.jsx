@@ -11,7 +11,8 @@ import {
 
 const localProjectIdsByPathSegment = {
     interview: 'interview',
-    VU: 'VU'
+    VU: 'VU',
+    M5U6: 'M5U6'
 };
 
 const getLocalProjectIdFromPath = () => {
