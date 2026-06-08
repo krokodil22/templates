@@ -31,6 +31,10 @@ const localProjects = {
     VU: {
         pathSegment: 'VU',
         fileName: 'VU.sb3'
+    },
+    M5U6: {
+        pathSegment: 'M5U6',
+        fileName: 'm5u6.sb3'
     }
 };
 

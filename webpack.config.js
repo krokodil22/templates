@@ -153,6 +153,14 @@ const buildConfig = baseConfig.clone()
     }))
     .addPlugin(new HtmlWebpackPlugin({
         ...commonHtmlWebpackPluginOptions,
+        chunks: ['gui'],
+        filename: 'M5U6/index.html',
+        template: 'src/playground/index.ejs',
+        staticPath: '../static',
+        title: 'Редактор'
+    }))
+    .addPlugin(new HtmlWebpackPlugin({
+        ...commonHtmlWebpackPluginOptions,
         chunks: ['blocksonly'],
         filename: 'blocks-only.html',
         template: 'src/playground/index.ejs',
@@ -185,6 +193,10 @@ const buildConfig = baseConfig.clone()
             {
                 from: 'VU',
                 to: 'VU'
+            },
+            {
+                from: 'M5U6',
+                to: 'M5U6'
             },
             {
                 from: 'extensions/**',

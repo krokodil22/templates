@@ -1,4 +1,4 @@
-const localProjectPathSegments = ['interview', 'VU'];
+const localProjectPathSegments = ['interview', 'VU', 'M5U6'];
 
 const getCurrentPathSegments = locationLike => locationLike.pathname
     .split('/')

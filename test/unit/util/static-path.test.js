@@ -11,5 +11,7 @@ describe('getEditorBasePath', () => {
         expect(getEditorBasePath({pathname: '/templates/VU/index.html'})).toBe('../');
         expect(getEditorBasePath({pathname: '/templates/interview/'})).toBe('../');
         expect(getEditorBasePath({pathname: '/templates/interview/index.html'})).toBe('../');
+        expect(getEditorBasePath({pathname: '/templates/M5U6/'})).toBe('../');
+        expect(getEditorBasePath({pathname: '/templates/M5U6/index.html'})).toBe('../');
     });
 });
