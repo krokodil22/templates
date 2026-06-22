@@ -48,7 +48,7 @@ const localProjects = {
 const getLocalProjectUrl = projectId => {
     const taskProject = getTaskProjectFromPath();
     if (taskProject && taskProject.id === projectId) {
-        return `../${taskProject.fileName}`;
+        return 'project.sb3';
     }
 
     const localProject = localProjects[projectId];

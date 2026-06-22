@@ -261,6 +261,10 @@ buildConfig
                 to: 'tasks',
                 noErrorOnMissing: true
             },
+            ...taskProjects.map(taskProject => ({
+                from: taskProject.id,
+                to: `${taskProject.urlPath}/project.sb3`
+            })),
             {
                 from: 'extensions/**',
                 to: 'static',
