@@ -46,8 +46,8 @@ const {RequestMetadata, setMetadata, unsetMetadata} = storage.scratchFetch;
 
 const setProjectIdMetadata = projectId => {
     // If project ID is '0' or zero, it's not a real project ID. In that case, remove the project ID metadata.
-    // Same if it's null undefined.
-    if (projectId && projectId !== '0') {
+    // Same if it's null undefined or a local task path rather than a numeric Scratch project ID.
+    if (projectId && projectId !== '0' && /^\d+$/.test(projectId.toString())) {
         setMetadata(RequestMetadata.ProjectId, projectId);
     } else {
         unsetMetadata(RequestMetadata.ProjectId);
