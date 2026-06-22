@@ -16,6 +16,11 @@
     <meta name="google" value="notranslate">
     <link rel="shortcut icon" href="<%= htmlWebpackPlugin.options.staticPath || 'static' %>/favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <% if (htmlWebpackPlugin.options.localTaskProject) { %>
+    <script>
+      window.LOCAL_TASK_PROJECT = <%= JSON.stringify(htmlWebpackPlugin.options.localTaskProject) %>;
+    </script>
+    <% } %>
   </head>
   <body>
     <% if (htmlWebpackPlugin.options.gtm_id) { %>

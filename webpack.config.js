@@ -232,7 +232,8 @@ taskProjects.forEach(taskProject => {
         filename: `${taskProject.urlPath}/index.html`,
         template: 'src/playground/index.ejs',
         staticPath: '../../../../static',
-        title: taskProject.mode === 'FS' ? 'Проект' : 'Редактор'
+        title: taskProject.mode === 'FS' ? 'Проект' : 'Редактор',
+        localTaskProject: taskProject
     }));
 });
 

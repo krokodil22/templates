@@ -13,6 +13,8 @@ const pathEndsWithSegments = (pathSegments, suffixSegments) => {
 };
 
 const getTaskProjectFromPath = () => {
+    if (window.LOCAL_TASK_PROJECT) return window.LOCAL_TASK_PROJECT;
+
     const pathSegments = getCurrentPathSegments();
     const normalizedSegments = pathSegments[pathSegments.length - 1] === 'index.html' ?
         pathSegments.slice(0, -1) :
