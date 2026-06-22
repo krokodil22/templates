@@ -5,14 +5,23 @@ const getCurrentPathSegments = () => window.location.pathname
     .map(segment => decodeURIComponent(segment))
     .filter(Boolean);
 
+const pathEndsWithSegments = (pathSegments, suffixSegments) => {
+    if (pathSegments.length < suffixSegments.length) return false;
+
+    const offset = pathSegments.length - suffixSegments.length;
+    return suffixSegments.every((segment, index) => pathSegments[offset + index] === segment);
+};
+
 const getTaskProjectFromPath = () => {
     const pathSegments = getCurrentPathSegments();
     const normalizedSegments = pathSegments[pathSegments.length - 1] === 'index.html' ?
         pathSegments.slice(0, -1) :
         pathSegments;
-    const normalizedPath = normalizedSegments.join('/');
 
-    return localTaskProjects.find(taskProject => taskProject.urlPath === normalizedPath) || null;
+    return localTaskProjects.find(taskProject => {
+        const taskPathSegments = taskProject.urlPath.split('/');
+        return pathEndsWithSegments(normalizedSegments, taskPathSegments);
+    }) || null;
 };
 
 export {
