@@ -45,15 +45,30 @@ const localProjects = {
     }
 };
 
-const getLocalProjectUrl = projectId => {
+const getTaskProjectUrls = taskProject => {
+    const locationHref = window.location.href;
+    const taskPageHref = locationHref.endsWith('/') || locationHref.endsWith('/index.html') ?
+        locationHref :
+        `${locationHref}/`;
+    const tasksPathIndex = window.location.pathname.indexOf('/tasks/');
+    const siteBasePath = tasksPathIndex === -1 ? '/' : window.location.pathname.slice(0, tasksPathIndex + 1);
+    const sourceProjectUrl = `${siteBasePath}${taskProject.sourceDir}/${taskProject.fileName}`;
+
+    return [
+        new URL('project.sb3', taskPageHref).toString(),
+        sourceProjectUrl
+    ];
+};
+
+const getLocalProjectUrls = projectId => {
     const taskProject = getTaskProjectFromPath();
     if (taskProject && taskProject.id === projectId) {
-        return 'project.sb3';
+        return getTaskProjectUrls(taskProject);
     }
 
     const localProject = localProjects[projectId];
 
-    if (!localProject) return null;
+    if (!localProject) return [];
 
     const pathSegments = window.location.pathname
         .split('/')
@@ -66,10 +81,10 @@ const getLocalProjectUrl = projectId => {
         lastPathSegment;
 
     if (templatePathSegment === localProject.pathSegment) {
-        return localProject.fileName;
+        return [localProject.fileName];
     }
 
-    return `${localProject.pathSegment}/${localProject.fileName}`;
+    return [`${localProject.pathSegment}/${localProject.fileName}`];
 };
 
 /* Higher Order Component to provide behavior for loading projects by id. If
@@ -121,16 +136,18 @@ const ProjectFetcherHOC = function (WrappedComponent) {
             }
         }
         fetchProject (projectId, loadingState) {
-            const localProjectUrl = getLocalProjectUrl(projectId);
+            const localProjectUrls = getLocalProjectUrls(projectId);
 
-            if (localProjectUrl) {
-                return fetch(localProjectUrl)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`Could not load local project: ${localProjectUrl}`);
-                        }
-                        return response.arrayBuffer();
-                    })
+            if (localProjectUrls.length) {
+                return localProjectUrls.reduce((previousFetch, localProjectUrl) => (
+                    previousFetch.catch(() => fetch(localProjectUrl)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Could not load local project: ${localProjectUrl}`);
+                            }
+                            return response.arrayBuffer();
+                        }))
+                ), Promise.reject(new Error('No local project URL attempted yet')))
                     .then(projectData => {
                         this.props.onFetchedProjectData(projectData, loadingState);
                     })
