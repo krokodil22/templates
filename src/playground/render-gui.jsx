@@ -7,6 +7,7 @@ import GUI from '../containers/gui.jsx';
 import HashParserHOC from '../lib/hash-parser-hoc.jsx';
 import log from '../lib/log.js';
 import {getEditorBasePath} from '../lib/static-path';
+import {getTaskProjectFromPath} from '../lib/local-task-projects';
 
 const onClickLogo = () => {
     window.location = 'https://scratch.mit.edu';
@@ -45,6 +46,8 @@ export default appTarget => {
     const backpackHost = backpackHostMatches ? backpackHostMatches[1] : null;
 
     const basePath = getEditorBasePath();
+    const taskProject = getTaskProjectFromPath();
+    const isFsTaskProject = taskProject && taskProject.mode === 'FS';
 
     const scratchDesktopMatches = window.location.href.match(/[?&]isScratchDesktop=([^&]+)/);
     let simulateScratchDesktop;
@@ -83,6 +86,8 @@ export default appTarget => {
                 basePath={basePath}
                 showComingSoon
                 backpackHost={backpackHost}
+                isFullScreen={isFsTaskProject}
+                isPlayerOnly={isFsTaskProject}
                 canSave={false}
                 onClickLogo={onClickLogo}
             />,
