@@ -1,6 +1,49 @@
 const path = require('path');
 const webpack = require('webpack');
 
+const fs = require('fs');
+const crypto = require('crypto');
+
+const TASKS_DIR = path.resolve(__dirname, 'tasks');
+const toSlug = value => {
+    const normalized = value
+        .toLowerCase()
+        .replace(/\.sb3$/, '')
+        .replace(/[^a-z0-9а-яё]+/gi, '-')
+        .replace(/^-+|-+$/g, '');
+    return normalized || 'project';
+};
+const taskProjects = [];
+const collectTaskProjects = dir => {
+    if (!fs.existsSync(dir)) return;
+    for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
+        const fullPath = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+            collectTaskProjects(fullPath);
+        } else if (entry.isFile() && entry.name.endsWith('.sb3')) {
+            const relativeDir = path.relative(TASKS_DIR, dir).split(path.sep);
+            const mode = relativeDir[relativeDir.length - 1];
+            if (mode !== 'FS' && mode !== 'Editor') continue;
+            const relativeFile = path.relative(__dirname, fullPath)
+                .split(path.sep)
+                .join('/');
+            const hash = crypto.createHash('sha1')
+                .update(relativeFile)
+                .digest('hex')
+                .slice(0, 8);
+            const urlPath = `tasks/${relativeDir.join('/')}/${toSlug(entry.name)}-${hash}`;
+            taskProjects.push({
+                id: relativeFile,
+                mode,
+                fileName: entry.name,
+                sourceDir: `tasks/${relativeDir.join('/')}`,
+                urlPath
+            });
+        }
+    }
+};
+collectTaskProjects(TASKS_DIR);
+
 // Plugins
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -53,7 +96,8 @@ const baseConfig = new ScratchWebpackConfigBuilder(
         'process.env.DEBUG': Boolean(process.env.DEBUG),
         'process.env.GA_ID': `"${process.env.GA_ID || 'UA-000000-01'}"`,
         'process.env.GTM_ENV_AUTH': `"${process.env.GTM_ENV_AUTH || ''}"`,
-        'process.env.GTM_ID': process.env.GTM_ID ? `"${process.env.GTM_ID}"` : null
+        'process.env.GTM_ID': process.env.GTM_ID ? `"${process.env.GTM_ID}"` : null,
+        'process.env.LOCAL_TASK_PROJECTS': JSON.stringify(taskProjects)
     }))
     .addPlugin(new CopyWebpackPlugin({
         patterns: [
@@ -179,7 +223,20 @@ const buildConfig = baseConfig.clone()
         filename: 'player.html',
         template: 'src/playground/index.ejs',
         title: 'Scratch 3.0 GUI: Player Example'
-    }))
+    }));
+
+taskProjects.forEach(taskProject => {
+    buildConfig.addPlugin(new HtmlWebpackPlugin({
+        ...commonHtmlWebpackPluginOptions,
+        chunks: ['gui'],
+        filename: `${taskProject.urlPath}/index.html`,
+        template: 'src/playground/index.ejs',
+        staticPath: '../../../../static',
+        title: taskProject.mode === 'FS' ? 'Проект' : 'Редактор'
+    }));
+});
+
+buildConfig
     .addPlugin(new CopyWebpackPlugin({
         patterns: [
             {
@@ -197,6 +254,11 @@ const buildConfig = baseConfig.clone()
             {
                 from: 'M5U6',
                 to: 'M5U6'
+            },
+            {
+                from: 'tasks',
+                to: 'tasks',
+                noErrorOnMissing: true
             },
             {
                 from: 'extensions/**',

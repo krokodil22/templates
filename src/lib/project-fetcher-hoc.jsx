@@ -22,8 +22,15 @@ import {
 
 import log from './log';
 import storage from './storage';
+import {getTaskProjectFromPath, localTaskProjects} from './local-task-projects';
 
 const localProjects = {
+    ...localTaskProjects.reduce((projects, taskProject) => Object.assign(projects, {
+        [taskProject.id]: {
+            pathSegment: taskProject.urlPath,
+            fileName: `${taskProject.sourceDir}/${taskProject.fileName}`
+        }
+    }), {}),
     interview: {
         pathSegment: 'interview',
         fileName: 'task.sb3'
@@ -39,6 +46,11 @@ const localProjects = {
 };
 
 const getLocalProjectUrl = projectId => {
+    const taskProject = getTaskProjectFromPath();
+    if (taskProject && taskProject.id === projectId) {
+        return `../${taskProject.fileName}`;
+    }
+
     const localProject = localProjects[projectId];
 
     if (!localProject) return null;

@@ -1,3 +1,5 @@
+import {getTaskProjectFromPath} from './local-task-projects';
+
 const localProjectPathSegments = ['interview', 'VU', 'M5U6'];
 
 const getCurrentPathSegments = locationLike => locationLike.pathname
@@ -6,6 +8,10 @@ const getCurrentPathSegments = locationLike => locationLike.pathname
     .filter(Boolean);
 
 const getEditorBasePath = (locationLike = window.location) => {
+    if (getTaskProjectFromPath()) {
+        return '../../../../';
+    }
+
     const pathSegments = getCurrentPathSegments(locationLike);
     const lastPathSegment = pathSegments[pathSegments.length - 1];
     const templatePathSegment = lastPathSegment === 'index.html' ?
