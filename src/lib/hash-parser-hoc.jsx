@@ -3,6 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 
+import {getTaskProjectFromPath} from './local-task-projects';
+
 import {
     defaultProjectId,
     getIsFetchingWithoutId,
@@ -25,6 +27,9 @@ const getLocalProjectIdFromPath = () => {
     const templatePathSegment = lastPathSegment === 'index.html' ?
         pathSegments[pathSegments.length - 2] :
         lastPathSegment;
+
+    const taskProject = getTaskProjectFromPath();
+    if (taskProject) return taskProject.id;
 
     return localProjectIdsByPathSegment[templatePathSegment] || null;
 };
