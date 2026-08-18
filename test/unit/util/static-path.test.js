@@ -9,6 +9,8 @@ describe('getEditorBasePath', () => {
     test('uses parent static assets from local project pages', () => {
         expect(getEditorBasePath({pathname: '/templates/VU/'})).toBe('../');
         expect(getEditorBasePath({pathname: '/templates/VU/index.html'})).toBe('../');
+        expect(getEditorBasePath({pathname: '/templates/VU-etalon/'})).toBe('../');
+        expect(getEditorBasePath({pathname: '/templates/VU-etalon/index.html'})).toBe('../');
         expect(getEditorBasePath({pathname: '/templates/interview/'})).toBe('../');
         expect(getEditorBasePath({pathname: '/templates/interview/index.html'})).toBe('../');
         expect(getEditorBasePath({pathname: '/templates/M5U6/'})).toBe('../');

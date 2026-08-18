@@ -101,6 +101,24 @@ describe('HashParserHOC', () => {
         expect(mockSetProjectIdFunc.mock.calls[0][0]).toBe('VU');
     });
 
+    test('when the path is a local VU etalon template, it passes VU-etalon as projectId', () => {
+        const Component = ({projectId}) => <div>{projectId}</div>;
+        const WrappedComponent = HashParserHOC(Component);
+        Object.defineProperty(window.location, 'pathname', {
+            value: '/VU-etalon/',
+            configurable: true
+        });
+        window.location.hash = '';
+        const mockSetProjectIdFunc = jest.fn();
+        mount(
+            <WrappedComponent
+                setProjectId={mockSetProjectIdFunc}
+                store={store}
+            />
+        );
+        expect(mockSetProjectIdFunc.mock.calls[0][0]).toBe('VU-etalon');
+    });
+
     test('when the path is a local M5U6 template, it passes M5U6 as projectId', () => {
         const Component = ({projectId}) => <div>{projectId}</div>;
         const WrappedComponent = HashParserHOC(Component);
