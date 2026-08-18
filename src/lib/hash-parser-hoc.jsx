@@ -12,9 +12,10 @@ import {
 } from '../reducers/project-state';
 
 const localProjectIdsByPathSegment = {
-    interview: 'interview',
-    VU: 'VU',
-    M5U6: 'M5U6'
+    'interview': 'interview',
+    'VU': 'VU',
+    'VU-etalon': 'VU-etalon',
+    'M5U6': 'M5U6'
 };
 
 const getLocalProjectIdFromPath = () => {

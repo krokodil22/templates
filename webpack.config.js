@@ -198,6 +198,14 @@ const buildConfig = baseConfig.clone()
     .addPlugin(new HtmlWebpackPlugin({
         ...commonHtmlWebpackPluginOptions,
         chunks: ['gui'],
+        filename: 'VU-etalon/index.html',
+        template: 'src/playground/index.ejs',
+        staticPath: '../static',
+        title: 'Редактор'
+    }))
+    .addPlugin(new HtmlWebpackPlugin({
+        ...commonHtmlWebpackPluginOptions,
+        chunks: ['gui'],
         filename: 'M5U6/index.html',
         template: 'src/playground/index.ejs',
         staticPath: '../static',
@@ -251,6 +259,10 @@ buildConfig
             {
                 from: 'VU',
                 to: 'VU'
+            },
+            {
+                from: 'VU/VU-etalon.sb3',
+                to: 'VU-etalon/VU-etalon.sb3'
             },
             {
                 from: 'M5U6',

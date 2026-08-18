@@ -1,6 +1,6 @@
 import {getTaskProjectFromPath} from './local-task-projects';
 
-const localProjectPathSegments = ['interview', 'VU', 'M5U6'];
+const localProjectPathSegments = ['interview', 'VU', 'VU-etalon', 'M5U6'];
 
 const getCurrentPathSegments = locationLike => locationLike.pathname
     .split('/')

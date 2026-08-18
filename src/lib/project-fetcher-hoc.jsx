@@ -31,15 +31,19 @@ const localProjects = {
             fileName: `${taskProject.sourceDir}/${taskProject.fileName}`
         }
     }), {}),
-    interview: {
+    'interview': {
         pathSegment: 'interview',
         fileName: 'task.sb3'
     },
-    VU: {
+    'VU': {
         pathSegment: 'VU',
         fileName: 'VU.sb3'
     },
-    M5U6: {
+    'VU-etalon': {
+        pathSegment: 'VU-etalon',
+        fileName: 'VU-etalon.sb3'
+    },
+    'M5U6': {
         pathSegment: 'M5U6',
         fileName: 'm5u6.sb3'
     }
